@@ -143,6 +143,8 @@ enum {
 #define DHCP_PARAM_REQ          0x37 /* list of options client wants */
 //#define DHCP_ERR_MESSAGE      0x38 /* error message when sending NAK etc */
 #define DHCP_MAX_SIZE           0x39
+#define DHCP_RENEWAL_TIME       0x3a
+#define DHCP_REBINDING_TIME     0x3b
 #define DHCP_VENDOR             0x3c /* client's vendor (a string) */
 #define DHCP_CLIENT_ID          0x3d /* by default client's MAC addr, but may be arbitrarily long */
 //#define DHCP_TFTP_SERVER_NAME 0x42 /* same as 'sname' field */

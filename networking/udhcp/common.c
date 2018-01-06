@@ -49,6 +49,8 @@ const struct dhcp_optflag dhcp_optflags[] = {
 	{ OPTION_U32                              , 0x33 }, /* DHCP_LEASE_TIME    */
 	{ OPTION_IP                               , 0x36 }, /* DHCP_SERVER_ID     */
 	{ OPTION_STRING                           , 0x38 }, /* DHCP_ERR_MESSAGE   */
+	{ OPTION_U32                              , 0x3a }, /* DHCP_RENEWAL_TIME  */
+	{ OPTION_U32                              , 0x3b }, /* DHCP_REBINDING_TIME */
 //TODO: must be combined with 'sname' and 'file' handling:
 	{ OPTION_STRING_HOST                      , 0x42 }, /* DHCP_TFTP_SERVER_NAME */
 	{ OPTION_STRING                           , 0x43 }, /* DHCP_BOOT_FILE     */
