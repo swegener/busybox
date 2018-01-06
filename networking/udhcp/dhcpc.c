@@ -1175,6 +1175,26 @@ static uint8_t* alloc_dhcp_option(int code, const char *str, int extra)
 	return storage;
 }
 
+static uint32_t udhcp_get_time_option(struct dhcp_packet *packet, int code)
+{
+	uint32_t result = 0;
+	uint8_t *temp;
+
+	temp = udhcp_get_option(packet, code);
+	if (temp) {
+		/* it IS unaligned sometimes, don't "optimize" */
+		move_from_unaligned32(result, temp);
+		result = ntohl(result);
+		/* paranoia: must not be too small and not prone to overflows */
+		if (result < 0x10)
+			result = 0x10;
+		if (result > 0x7fffffff / 1000)
+			result = 0x7fffffff / 1000;
+	}
+
+	return result;
+}
+
 #if BB_MMU
 static void client_background(void)
 {
@@ -1719,21 +1739,11 @@ int udhcpc_main(int argc UNUSED_PARAM, char **argv)
 				unsigned start;
 				uint32_t lease_seconds;
 				struct in_addr temp_addr;
-				uint8_t *temp;
 
-				temp = udhcp_get_option(&packet, DHCP_LEASE_TIME);
-				if (!temp) {
+				lease_seconds = udhcp_get_time_option(&packet, DHCP_LEASE_TIME);
+				if (!lease_seconds) {
 					bb_error_msg("no lease time with ACK, using 1 hour lease");
 					lease_seconds = 60 * 60;
-				} else {
-					/* it IS unaligned sometimes, don't "optimize" */
-					move_from_unaligned32(lease_seconds, temp);
-					lease_seconds = ntohl(lease_seconds);
-					/* paranoia: must not be too small and not prone to overflows */
-					if (lease_seconds < 0x10)
-						lease_seconds = 0x10;
-					if (lease_seconds > 0x7fffffff / 1000)
-						lease_seconds = 0x7fffffff / 1000;
 				}
 #if ENABLE_FEATURE_UDHCPC_ARPING
 				if (opt & OPT_a) {
